@@ -1,0 +1,21 @@
+# VS Code
+.vscode/*
+
+# Go workspace file
+go.work
+
+# VS Code metafiles
+.vscode-ctags
+
+# Editor files
+*.swp
+
+# Binaries
+adapter/adapter
+service/service
+
+# Packaging
+build/
+
+# Test artifacts
+key

@@ -1,2 +1,3 @@
 # hyperdrive-example
-Full example of a Hyperdrive module
+
+This repository contains a full example of a module for [Hyperdrive](https://github.com/nodeset-org/hyperdrive).
