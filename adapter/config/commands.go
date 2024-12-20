@@ -5,6 +5,10 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+const (
+	TestServerEndpointEnvVarName string = "HD_TEST_SERVER_ENDPOINT"
+)
+
 // Handles `hd-module` commands
 func RegisterCommands(app *cli.App) {
 	app.Commands = append(app.Commands, &cli.Command{
@@ -23,7 +27,7 @@ func RegisterCommands(app *cli.App) {
 					param := c.Args().Get(0)
 
 					// Run
-					return getParam(param)
+					return getParam(c, param)
 				},
 			},
 			{
@@ -38,7 +42,7 @@ func RegisterCommands(app *cli.App) {
 					value := c.Args().Get(1)
 
 					// Run
-					return setParam(param, value)
+					return setParam(c, param, value)
 				},
 			},
 		},

@@ -18,13 +18,13 @@ type DynamicProperty[Type any] struct {
 // Unmarshal the dynamic property from a map
 func (p *DynamicProperty[Type]) Unmarshal(data map[string]any) error {
 	// Get the default value
-	_, err := DeserializeProperty(data, DefaultKey, &p.Default, false)
+	_, err := deserializeProperty(data, DefaultKey, &p.Default, false)
 	if err != nil {
 		return err
 	}
 
 	// Get the template
-	_, err = DeserializeProperty(data, TemplateKey, &p.Template, true)
+	_, err = deserializeProperty(data, TemplateKey, &p.Template, true)
 	if err != nil {
 		return err
 	}
@@ -32,10 +32,10 @@ func (p *DynamicProperty[Type]) Unmarshal(data map[string]any) error {
 }
 
 // Deserialize a dynamic property from a map
-func DeserializeDynamicProperty[Type any](data map[string]any, propertyName string, property *DynamicProperty[Type], optional bool) (bool, error) {
+func deserializeDynamicProperty[Type any](data map[string]any, propertyName string, property *DynamicProperty[Type], optional bool) (bool, error) {
 	// Get the property as a map
 	var value map[string]any
-	exists, err := DeserializeProperty(data, propertyName, &value, optional)
+	exists, err := deserializeProperty(data, propertyName, &value, optional)
 	if err != nil {
 		return false, err
 	}

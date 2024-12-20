@@ -4,16 +4,22 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"path/filepath"
 
 	"github.com/nodeset-org/hyperdrive-example/adapter/utils"
 	"github.com/nodeset-org/hyperdrive-example/shared"
 	"github.com/nodeset-org/hyperdrive-example/shared/api"
+	"github.com/urfave/cli/v2"
 )
 
 // Set one of the config parameters
-func setParam(param string, value string) error {
+func setParam(c *cli.Context, param string, value string) error {
 	// Create the logger
-	logHandler, err := shared.NewFileLogger(utils.AdapterLogPath)
+	logDir := c.String(utils.LogDirFlag.Name)
+	if logDir == "" {
+		return fmt.Errorf("log directory flag is required")
+	}
+	logHandler, err := shared.NewFileLogger(filepath.Join(logDir, utils.AdapterLogFile))
 	if err != nil {
 		return fmt.Errorf("error creating logger: %w", err)
 	}
@@ -23,15 +29,24 @@ func setParam(param string, value string) error {
 	defer logHandler.Close()
 
 	// Create the configuration manager
-	cfgMgr := NewAdapterConfigManager()
+	cfgMgr, err := NewAdapterConfigManager(c)
+	if err != nil {
+		return fmt.Errorf("error creating config manager: %w", err)
+	}
 	cfg, err := cfgMgr.LoadConfigFromDisk()
 	if err != nil {
 		return fmt.Errorf("error loading config: %w", err)
 	}
+	if cfg == nil {
+		return fmt.Errorf("config has not been created yet")
+	}
 
 	// Create an API client
-	projectName := os.Getenv("HD_PROJECT_NAME")
-	serviceName := projectName + "_" + shared.ServiceContainerName
+	serviceName := os.Getenv(TestServerEndpointEnvVarName)
+	if serviceName == "" {
+		projectName := os.Getenv("HD_PROJECT_NAME")
+		serviceName = projectName + "_" + shared.ServiceContainerName
+	}
 	apiClient, err := api.NewApiClient(logger, serviceName, uint(cfg.ServerConfig.Port.Value))
 	if err != nil {
 		return fmt.Errorf("error creating API client: %w", err)

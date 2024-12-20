@@ -7,6 +7,7 @@ import (
 	"github.com/nodeset-org/hyperdrive-example/adapter/config"
 	"github.com/nodeset-org/hyperdrive-example/adapter/config/ids"
 	"github.com/nodeset-org/hyperdrive-example/adapter/utils"
+	hdconfig "github.com/nodeset-org/hyperdrive-example/hyperdrive/config"
 	"github.com/urfave/cli/v2"
 )
 
@@ -36,7 +37,8 @@ func processConfig(c *cli.Context) error {
 	}
 
 	// Get the config
-	cfg, err := config.ConvertFromInstance(request.Config)
+	cfg := config.NewExampleConfig()
+	err = hdconfig.UnmarshalConfigurationInstanceIntoMetadata(request.Config, cfg)
 	if err != nil {
 		return err
 	}

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
+	"path/filepath"
 	"strconv"
 
 	"github.com/nodeset-org/hyperdrive-example/adapter/config/ids"
@@ -12,6 +13,7 @@ import (
 	hdconfig "github.com/nodeset-org/hyperdrive-example/hyperdrive/config"
 	"github.com/nodeset-org/hyperdrive-example/shared"
 	nativecfg "github.com/nodeset-org/hyperdrive-example/shared/config"
+	"github.com/urfave/cli/v2"
 	"gopkg.in/yaml.v3"
 )
 
@@ -28,23 +30,21 @@ const (
 )
 
 type ExampleConfig struct {
-	hdconfig.ConfigurationMetadata `json:"-" yaml:"-"`
+	ExampleBool hdconfig.BoolParameterMetadata
 
-	ExampleBool hdconfig.BoolParameterMetadata `json:"-" yaml:"-"`
+	ExampleInt hdconfig.IntParameterMetadata
 
-	ExampleInt hdconfig.IntParameterMetadata `json:"-" yaml:"-"`
+	ExampleUint hdconfig.UintParameterMetadata
 
-	ExampleUint hdconfig.UintParameterMetadata `json:"-" yaml:"-"`
+	ExampleFloat hdconfig.FloatParameterMetadata
 
-	ExampleFloat hdconfig.FloatParameterMetadata `json:"-" yaml:"-"`
+	ExampleString hdconfig.StringParameterMetadata
 
-	ExampleString hdconfig.StringParameterMetadata `json:"-" yaml:"-"`
+	ExampleChoice hdconfig.ChoiceParameterMetadata[nativecfg.ExampleOption]
 
-	ExampleChoice hdconfig.ChoiceParameterMetadata[nativecfg.ExampleOption] `json:"-" yaml:"-"`
+	SubConfig *SubConfig
 
-	SubConfig *SubConfig `json:"-" yaml:"-"`
-
-	ServerConfig *ServerConfig `json:"-" yaml:"-"`
+	ServerConfig *ServerConfig
 }
 
 func NewExampleConfig() *ExampleConfig {
@@ -98,14 +98,14 @@ func NewExampleConfig() *ExampleConfig {
 
 	thresholdString := strconv.FormatFloat(FloatThreshold, 'f', -1, 64)
 	options[1].Name = "Two"
-	options[2].Description.Default = "This is the second option. It is hidden when ExampleFloat is less than " + thresholdString + "."
-	options[2].Description.Template = fmt.Sprintf("{{if lt .GetValue %s %s}}This option is hidden because the float is less than %s.{{else}}This option is visible because the float is greater than or equal to %s.{{end}}", ids.ExampleFloatID, thresholdString, thresholdString, thresholdString)
+	options[1].Description.Default = "This is the second option. It is hidden when ExampleFloat is less than " + thresholdString + "."
+	options[1].Description.Template = fmt.Sprintf("{{if lt .GetValue %s %s}}This option is hidden because the float is less than %s.{{else}}This option is visible because the float is greater than or equal to %s.{{end}}", ids.ExampleFloatID, thresholdString, thresholdString, thresholdString)
 	options[1].Value = nativecfg.ExampleOption_Two
 	options[1].Disabled.Default = true
 	options[1].Disabled.Template = "{{if eq .GetValue " + ids.ExampleBoolID + " true}}false{{else}}{{.UseDefault}}{{end}}"
 
 	options[2].Name = "Three"
-	options[0].Description.Default = "This is the third option."
+	options[2].Description.Default = "This is the third option."
 	options[2].Value = nativecfg.ExampleOption_Three
 
 	// ExampleChoice
@@ -116,32 +116,19 @@ func NewExampleConfig() *ExampleConfig {
 	cfg.ExampleChoice.Default = options[0].Value
 	cfg.ExampleChoice.Value = cfg.ExampleChoice.Default
 
-	cfg.Parameters = []hdconfig.IParameterMetadata{
-		&cfg.ExampleBool,
-		&cfg.ExampleInt,
-		&cfg.ExampleUint,
-		&cfg.ExampleFloat,
-		&cfg.ExampleString,
-		&cfg.ExampleChoice,
-	}
-
 	// Subconfigs
 	cfg.SubConfig = NewSubConfig()
 	cfg.ServerConfig = NewServerConfig()
-	cfg.Sections = []hdconfig.SectionMetadata{
-		cfg.SubConfig.SectionMetadata,
-		cfg.ServerConfig.SectionMetadata,
-	}
 
 	return cfg
 }
 
 type SubConfig struct {
-	hdconfig.SectionMetadata
+	hdconfig.SectionMetadataHeader
 
-	SubExampleBool hdconfig.BoolParameterMetadata `json:"-" yaml:"-"`
+	SubExampleBool hdconfig.BoolParameterMetadata
 
-	SubExampleChoice hdconfig.ChoiceParameterMetadata[nativecfg.ExampleOption] `json:"-" yaml:"-"`
+	SubExampleChoice hdconfig.ChoiceParameterMetadata[nativecfg.ExampleOption]
 }
 
 func NewSubConfig() *SubConfig {
@@ -176,19 +163,15 @@ func NewSubConfig() *SubConfig {
 	cfg.SubExampleChoice.Default = options[1].Value
 	cfg.SubExampleChoice.Value = cfg.SubExampleChoice.Default
 
-	cfg.Parameters = []hdconfig.IParameterMetadata{
-		&cfg.SubExampleBool,
-		&cfg.SubExampleChoice,
-	}
 	return cfg
 }
 
 type ServerConfig struct {
-	hdconfig.SectionMetadata
+	hdconfig.SectionMetadataHeader
 
-	Port hdconfig.UintParameterMetadata `json:"-" yaml:"port"`
+	Port hdconfig.UintParameterMetadata
 
-	PortMode hdconfig.ChoiceParameterMetadata[PortMode] `json:"-" yaml:"-"`
+	PortMode hdconfig.ChoiceParameterMetadata[PortMode]
 }
 
 func NewServerConfig() *ServerConfig {
@@ -196,8 +179,6 @@ func NewServerConfig() *ServerConfig {
 	cfg.ID = hdconfig.Identifier(ids.ServerConfigID)
 	cfg.Name = "Service Config"
 	cfg.Description.Default = "This is the configuration for the module's service. This isn't used by the service directly, but it is used by Hyperdrive itself in the service's Docker Compose file template to configure the service during its starting process."
-	cfg.Sections = []hdconfig.SectionMetadata{}
-	cfg.Parameters = []hdconfig.IParameterMetadata{}
 
 	// Port
 	cfg.Port.ID = hdconfig.Identifier(ids.PortID)
@@ -232,10 +213,6 @@ func NewServerConfig() *ServerConfig {
 	cfg.PortMode.Value = cfg.PortMode.Default
 	cfg.PortMode.AffectedContainers = []string{shared.ServiceContainerName}
 
-	cfg.Parameters = []hdconfig.IParameterMetadata{
-		&cfg.Port,
-		&cfg.PortMode,
-	}
 	return cfg
 }
 
@@ -269,76 +246,6 @@ func (cfg *ExampleConfig) ConvertToNative() *nativecfg.NativeExampleConfig {
 	return native
 }
 
-func (cfg *ExampleConfig) ConvertToInstance() map[string]any {
-	instance := map[string]any{}
-	instance[ids.ExampleBoolID] = cfg.ExampleBool.Value
-	instance[ids.ExampleIntID] = cfg.ExampleInt.Value
-	instance[ids.ExampleUintID] = cfg.ExampleUint.Value
-	instance[ids.ExampleFloatID] = cfg.ExampleFloat.Value
-	instance[ids.ExampleStringID] = cfg.ExampleString.Value
-	instance[ids.ExampleChoiceID] = cfg.ExampleChoice.Value
-
-	subInstance := map[string]any{}
-	subInstance[ids.SubExampleBoolID] = cfg.SubConfig.SubExampleBool.Value
-	subInstance[ids.SubExampleChoiceID] = cfg.SubConfig.SubExampleChoice.Value
-	instance[ids.SubConfigID] = subInstance
-
-	return instance
-}
-
-func ConvertFromInstance(instance map[string]any) (*ExampleConfig, error) {
-	cfg := NewExampleConfig()
-
-	// Top-level parameters
-	var subConfig map[string]any
-	var serviceConfig map[string]any
-	errs := []error{
-		procParam(instance, ids.ExampleBoolID, &cfg.ExampleBool.Value),
-		procParam(instance, ids.ExampleIntID, &cfg.ExampleInt.Value),
-		procParam(instance, ids.ExampleUintID, &cfg.ExampleUint.Value),
-		procParam(instance, ids.ExampleFloatID, &cfg.ExampleFloat.Value),
-		procParam(instance, ids.ExampleStringID, &cfg.ExampleString.Value),
-		procParam(instance, ids.ExampleChoiceID, &cfg.ExampleChoice.Value),
-		procParam(instance, ids.SubConfigID, &subConfig),
-		procParam(instance, ids.ServerConfigID, &serviceConfig),
-	}
-	if err := errors.Join(errs...); err != nil {
-		return nil, fmt.Errorf("error processing parameters: %w", err)
-	}
-
-	// Sub-config
-	errs = []error{
-		procParam(subConfig, ids.SubExampleBoolID, &cfg.SubConfig.SubExampleBool.Value),
-		procParam(subConfig, ids.SubExampleChoiceID, &cfg.SubConfig.SubExampleChoice.Value),
-	}
-	if err := errors.Join(errs...); err != nil {
-		return nil, fmt.Errorf("error processing sub-config parameters: %w", err)
-	}
-
-	// Service config
-	errs = []error{
-		procParam(serviceConfig, ids.PortID, &cfg.ServerConfig.Port.Value),
-		procParam(serviceConfig, ids.PortModeID, &cfg.ServerConfig.PortMode.Value),
-	}
-	if err := errors.Join(errs...); err != nil {
-		return nil, fmt.Errorf("error processing service config parameters: %w", err)
-	}
-	return cfg, nil
-}
-
-func procParam[ParamType any](instance map[string]any, paramID string, store *ParamType) error {
-	paramAny, exists := instance[paramID]
-	if !exists {
-		return errors.New("missing required parameter: " + paramID)
-	}
-	paramTyped, ok := paramAny.(ParamType)
-	if !ok {
-		return fmt.Errorf("invalid type for parameter [%s]: %T", ids.ExampleBoolID, paramAny)
-	}
-	*store = paramTyped
-	return nil
-}
-
 // Configuration manager
 type AdapterConfigManager struct {
 	// The adapter configuration
@@ -352,11 +259,15 @@ type AdapterConfigManager struct {
 }
 
 // Create a new configuration manager for the adapter
-func NewAdapterConfigManager() *AdapterConfigManager {
-	return &AdapterConfigManager{
-		nativeConfigManager: nativecfg.NewConfigManager(utils.ServiceConfigPath),
-		adapterConfigPath:   utils.AdapterConfigPath,
+func NewAdapterConfigManager(c *cli.Context) (*AdapterConfigManager, error) {
+	configDir := c.String(utils.ConfigDirFlag.Name)
+	if configDir == "" {
+		return nil, fmt.Errorf("config directory is required")
 	}
+	return &AdapterConfigManager{
+		nativeConfigManager: nativecfg.NewConfigManager(filepath.Join(configDir, utils.ServiceConfigFile)),
+		adapterConfigPath:   filepath.Join(configDir, utils.AdapterConfigFile),
+	}, nil
 }
 
 // Load the configuration from disk
@@ -380,15 +291,19 @@ func (m *AdapterConfigManager) LoadConfigFromDisk() (*ExampleConfig, error) {
 	}
 
 	// Deserialize it
-	serverCfg := ServerConfig{}
-	err = yaml.Unmarshal(bytes, &serverCfg)
+	cfgInstance := map[string]any{}
+	err = yaml.Unmarshal(bytes, &cfgInstance)
 	if err != nil {
 		return nil, fmt.Errorf("error deserializing adapter config file [%s]: %w", m.adapterConfigPath, err)
 	}
+	serverCfg := NewServerConfig()
+	portInt := cfgInstance[ids.PortID].(int)
+	serverCfg.Port.Value = uint64(portInt)
+	serverCfg.PortMode.Value = PortMode(cfgInstance[ids.PortModeID].(string))
 
 	// Merge the configs
 	modCfg := ConvertToMetadata(nativeCfg)
-	modCfg.ServerConfig = &serverCfg
+	modCfg.ServerConfig = serverCfg
 	m.AdapterConfig = modCfg
 	return modCfg, nil
 }
@@ -408,7 +323,8 @@ func (m *AdapterConfigManager) SaveConfigToDisk() error {
 	}
 
 	// Serialize the adapter config
-	bytes, err := yaml.Marshal(m.AdapterConfig.ServerConfig)
+	modCfg := hdconfig.CreateInstanceFromMetadata(m.AdapterConfig.ServerConfig)
+	bytes, err := yaml.Marshal(modCfg)
 	if err != nil {
 		return fmt.Errorf("error serializing adapter config: %w", err)
 	}

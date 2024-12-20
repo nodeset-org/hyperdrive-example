@@ -6,6 +6,7 @@ import (
 	"github.com/goccy/go-json"
 	"github.com/nodeset-org/hyperdrive-example/adapter/config"
 	"github.com/nodeset-org/hyperdrive-example/adapter/utils"
+	hdconfig "github.com/nodeset-org/hyperdrive-example/hyperdrive/config"
 	"github.com/urfave/cli/v2"
 )
 
@@ -17,14 +18,22 @@ func getConfigInstance(c *cli.Context) error {
 	}
 
 	// Get the config
-	cfgMgr := config.NewAdapterConfigManager()
+	cfgMgr, err := config.NewAdapterConfigManager(c)
+	if err != nil {
+		return fmt.Errorf("error creating config manager: %w", err)
+	}
 	cfg, err := cfgMgr.LoadConfigFromDisk()
 	if err != nil {
 		return fmt.Errorf("error loading config: %w", err)
 	}
 
+	// Handle no saved config
+	if cfg == nil {
+		return fmt.Errorf("config has not been initialized yet")
+	}
+
 	// Create the response
-	instance := cfg.ConvertToInstance()
+	instance := hdconfig.CreateInstanceFromMetadata(cfg)
 	bytes, err := json.Marshal(instance)
 	if err != nil {
 		return fmt.Errorf("error marshalling config: %w", err)

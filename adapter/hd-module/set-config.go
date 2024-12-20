@@ -5,6 +5,7 @@ import (
 
 	"github.com/nodeset-org/hyperdrive-example/adapter/config"
 	"github.com/nodeset-org/hyperdrive-example/adapter/utils"
+	hdconfig "github.com/nodeset-org/hyperdrive-example/hyperdrive/config"
 	"github.com/urfave/cli/v2"
 )
 
@@ -25,13 +26,17 @@ func setConfig(c *cli.Context) error {
 	}
 
 	// Get the config
-	cfg, err := config.ConvertFromInstance(request.Config)
+	cfg := config.NewExampleConfig()
+	err = hdconfig.UnmarshalConfigurationInstanceIntoMetadata(request.Config, cfg)
 	if err != nil {
 		return err
 	}
 
 	// Make a config manager
-	cfgMgr := config.NewAdapterConfigManager()
+	cfgMgr, err := config.NewAdapterConfigManager(c)
+	if err != nil {
+		return fmt.Errorf("error creating config manager: %w", err)
+	}
 	cfgMgr.AdapterConfig = cfg
 
 	// Save it

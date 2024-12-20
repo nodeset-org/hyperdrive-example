@@ -40,10 +40,10 @@ func (i *Identifier) UnmarshalText(text []byte) error {
 }
 
 // Deserialize an identifier from a map
-func DeserializeIdentifier(data map[string]any, propertyName string, property *Identifier, optional bool) error {
+func deserializeIdentifier(data map[string]any, propertyName string, property *Identifier, optional bool) error {
 	// Get the property in string form
 	var value string
-	exists, err := DeserializeProperty(data, propertyName, &value, optional)
+	exists, err := deserializeProperty(data, propertyName, &value, optional)
 	if err != nil {
 		return err
 	}

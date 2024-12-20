@@ -1,45 +1,38 @@
 package config
 
-// Top-level object of a module configuration
-type ConfigurationMetadata struct {
-	// List of parameters in the configuration
-	Parameters []IParameterMetadata `json:"parameters" yaml:"parameters"`
+import (
+	"fmt"
+)
 
-	// List of sections in the configuration
-	Sections []SectionMetadata `json:"sections" yaml:"sections"`
+// Top-level object of a module configuration
+type IConfigurationMetadata interface {
+	IMetadataContainer
 }
 
-// Deserialize a configuration from a map
-func DeserializeConfigurationMetadata(data map[string]any) (ConfigurationMetadata, error) {
-	configuration := ConfigurationMetadata{}
+// Marshal a configuration metadata object to a map, suitable for JSON serialization
+func MarshalConfigurationMetadataToMap(metadata any) map[string]any {
+	containerMap := map[string]any{}
+	serializeContainerMetadataToMap(metadata, containerMap)
+	return containerMap
+}
 
-	// Handle the parameters
-	var parameters []map[string]any
-	_, err := DeserializeProperty(data, ParametersKey, &parameters, false)
+// Unmarshal a configuration metadata object from a map, typically from a JSON response
+func UnmarshalConfigurationMetadataFromMap(data map[string]any) (IConfigurationMetadata, error) {
+	container, err := deserializeContainerMetadataFromMap(data)
 	if err != nil {
-		return configuration, err
+		return nil, fmt.Errorf("error deserializing configuration: %w", err)
 	}
-	for _, parameterData := range parameters {
-		parameter, err := DeserializeParameterMetadata(parameterData)
-		if err != nil {
-			return configuration, err
-		}
-		configuration.Parameters = append(configuration.Parameters, parameter)
-	}
+	return container, nil
+}
 
-	// Handle subsections
-	var subsections []map[string]any
-	_, err = DeserializeProperty(data, SectionsKey, &subsections, false)
-	if err != nil {
-		return configuration, err
-	}
-	for _, subsectionData := range subsections {
-		subsection, err := DeserializeSectionMetadata(subsectionData)
-		if err != nil {
-			return configuration, err
-		}
-		configuration.Sections = append(configuration.Sections, subsection)
-	}
+// Marshal a configuration instance to a map, suitable for JSON serialization
+func CreateInstanceFromMetadata(metadata any) map[string]any {
+	containerMap := map[string]any{}
+	serializeContainerMetadataToInstance(metadata, containerMap)
+	return containerMap
+}
 
-	return configuration, nil
+// Set the values from a configuration instance into a configuration metadata object
+func UnmarshalConfigurationInstanceIntoMetadata(instance map[string]any, cfg any) error {
+	return deserializeContainerInstanceToMetadata(instance, cfg)
 }
