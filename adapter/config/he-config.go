@@ -10,9 +10,9 @@ import (
 
 	"github.com/nodeset-org/hyperdrive-example/adapter/config/ids"
 	"github.com/nodeset-org/hyperdrive-example/adapter/utils"
-	hdconfig "github.com/nodeset-org/hyperdrive-example/hyperdrive/config"
 	"github.com/nodeset-org/hyperdrive-example/shared"
 	nativecfg "github.com/nodeset-org/hyperdrive-example/shared/config"
+	hdconfig "github.com/nodeset-org/hyperdrive/modules/config"
 	"github.com/urfave/cli/v2"
 	"gopkg.in/yaml.v3"
 )
@@ -68,7 +68,7 @@ func NewExampleConfig() *ExampleConfig {
 	cfg.ExampleUint.ID = hdconfig.Identifier(ids.ExampleUintID)
 	cfg.ExampleUint.Name = "Example Unsigned Integer"
 	cfg.ExampleUint.Description.Default = "This is an example of an unsigned integer parameter."
-	cfg.ExampleInt.AffectedContainers = []string{shared.ServiceContainerName}
+	cfg.ExampleUint.AffectedContainers = []string{shared.ServiceContainerName}
 	cfg.ExampleUint.Value = cfg.ExampleUint.Default
 
 	// ExampleFloat
@@ -79,7 +79,7 @@ func NewExampleConfig() *ExampleConfig {
 	cfg.ExampleFloat.MinValue = 0.0
 	cfg.ExampleFloat.MaxValue = 100.0
 	cfg.ExampleFloat.Value = cfg.ExampleFloat.Default
-	cfg.ExampleInt.AffectedContainers = []string{shared.ServiceContainerName}
+	cfg.ExampleFloat.AffectedContainers = []string{shared.ServiceContainerName}
 
 	// ExampleString
 	cfg.ExampleString.ID = hdconfig.Identifier(ids.ExampleStringID)
@@ -88,7 +88,7 @@ func NewExampleConfig() *ExampleConfig {
 	cfg.ExampleString.MaxLength = 10
 	cfg.ExampleString.Regex = "^[a-zA-Z]*$"
 	cfg.ExampleString.Value = cfg.ExampleString.Default
-	cfg.ExampleInt.AffectedContainers = []string{shared.ServiceContainerName}
+	cfg.ExampleString.AffectedContainers = []string{shared.ServiceContainerName}
 
 	// Options for ExampleChoice
 	options := make([]hdconfig.ParameterMetadataOption[nativecfg.ExampleOption], 3)
@@ -115,6 +115,7 @@ func NewExampleConfig() *ExampleConfig {
 	cfg.ExampleChoice.Options = options
 	cfg.ExampleChoice.Default = options[0].Value
 	cfg.ExampleChoice.Value = cfg.ExampleChoice.Default
+	cfg.ExampleChoice.AffectedContainers = []string{}
 
 	// Subconfigs
 	cfg.SubConfig = NewSubConfig()

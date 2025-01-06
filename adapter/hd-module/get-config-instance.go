@@ -6,7 +6,7 @@ import (
 	"github.com/goccy/go-json"
 	"github.com/nodeset-org/hyperdrive-example/adapter/config"
 	"github.com/nodeset-org/hyperdrive-example/adapter/utils"
-	hdconfig "github.com/nodeset-org/hyperdrive-example/hyperdrive/config"
+	hdconfig "github.com/nodeset-org/hyperdrive/modules/config"
 	"github.com/urfave/cli/v2"
 )
 
