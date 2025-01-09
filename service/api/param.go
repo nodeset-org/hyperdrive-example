@@ -26,13 +26,13 @@ func (s *ApiServer) handleParamGet(w http.ResponseWriter, r *http.Request) {
 	args, _ := ProcessApiRequest(w, r, s.logger, nil)
 
 	// Get the param
-	if !args.Has("param") {
-		HandleInputError(w, s.logger, fmt.Errorf("missing required parameter [param]"))
+	if !args.Has("id") {
+		HandleInputError(w, s.logger, fmt.Errorf("missing required parameter [id]"))
 		return
 	}
 
 	var response api.GetParamResponse
-	param := args.Get("param")
+	param := args.Get("id")
 	switch param {
 	case "exampleBool":
 		response.Value = strconv.FormatBool(s.cfgMgr.Config.ExampleBool)

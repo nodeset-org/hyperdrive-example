@@ -17,10 +17,11 @@ func RegisterCommands(app *cli.App) {
 		Usage:   "Commands for interacting with the module's configuration",
 		Subcommands: []*cli.Command{
 			{
-				Name:    "get-param",
-				Aliases: []string{"g"},
-				Flags:   []cli.Flag{},
-				Usage:   "Get the value of a parameter.",
+				Name:      "get-param",
+				Aliases:   []string{"g"},
+				Flags:     []cli.Flag{},
+				ArgsUsage: "parameter-id",
+				Usage:     "Get the value of a parameter.",
 				Action: func(c *cli.Context) error {
 					// Validate args
 					utils.ValidateArgCount(c, 1)

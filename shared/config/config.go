@@ -82,6 +82,7 @@ func (m *ConfigManager) LoadConfigFromFile() (*NativeExampleConfig, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error deserializing config file [%s]: %w", m.ConfigPath, err)
 	}
+	m.Config = &cfg
 	return &cfg, nil
 }
 
