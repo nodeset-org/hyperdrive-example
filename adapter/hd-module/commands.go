@@ -52,19 +52,6 @@ func RegisterCommands(app *cli.App) {
 				},
 			},
 			{
-				Name:    "get-config-instance",
-				Aliases: []string{"i"},
-				Flags:   []cli.Flag{},
-				Usage:   "Get the instance of the module's configuration, with the values all set.",
-				Action: func(c *cli.Context) error {
-					// Validate args
-					utils.ValidateArgCount(c, 0)
-
-					// Run
-					return getConfigInstance(c)
-				},
-			},
-			{
 				Name:    "process-config",
 				Aliases: []string{"p"},
 				Flags:   []cli.Flag{},

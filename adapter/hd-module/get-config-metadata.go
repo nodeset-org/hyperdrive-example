@@ -7,6 +7,7 @@ import (
 	"github.com/goccy/go-json"
 	"github.com/nodeset-org/hyperdrive-example/adapter/config"
 	"github.com/nodeset-org/hyperdrive-example/adapter/utils"
+	"github.com/nodeset-org/hyperdrive-example/shared"
 	hdconfig "github.com/nodeset-org/hyperdrive/modules/config"
 	"github.com/urfave/cli/v2"
 )
@@ -19,22 +20,10 @@ func getConfigMetadata(c *cli.Context) error {
 	}
 
 	// Get the config
-	cfgMgr, err := config.NewAdapterConfigManager(c)
-	if err != nil {
-		return fmt.Errorf("error creating config manager: %w", err)
-	}
-	cfg, err := cfgMgr.LoadConfigFromDisk()
-	if err != nil {
-		return fmt.Errorf("error loading config: %w", err)
-	}
-
-	// Handle no config file by using the default
-	if cfg == nil {
-		cfg = config.NewExampleConfig()
-	}
+	cfg := config.NewExampleConfig()
 
 	// Create the response
-	cfgMap := hdconfig.MarshalConfigurationMetadataToMap(cfg)
+	cfgMap := hdconfig.MarshalConfigurationToMap(cfg, shared.Version)
 	bytes, err := json.Marshal(cfgMap)
 	if err != nil {
 		return fmt.Errorf("error marshalling config: %w", err)

@@ -47,7 +47,7 @@ func setParam(c *cli.Context, param string, value string) error {
 		projectName := os.Getenv("HD_PROJECT_NAME")
 		serviceName = projectName + "_" + shared.ServiceContainerName
 	}
-	apiClient, err := api.NewApiClient(logger, serviceName, uint(cfg.ServerConfig.Port.Value))
+	apiClient, err := api.NewApiClient(logger, serviceName, uint(cfg.ServerConfig.Port))
 	if err != nil {
 		return fmt.Errorf("error creating API client: %w", err)
 	}

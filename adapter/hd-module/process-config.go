@@ -7,7 +7,6 @@ import (
 	"github.com/nodeset-org/hyperdrive-example/adapter/config"
 	"github.com/nodeset-org/hyperdrive-example/adapter/config/ids"
 	"github.com/nodeset-org/hyperdrive-example/adapter/utils"
-	hdconfig "github.com/nodeset-org/hyperdrive/modules/config"
 	"github.com/urfave/cli/v2"
 )
 
@@ -16,7 +15,7 @@ type processConfigRequest struct {
 	utils.KeyedRequest
 
 	// The config instance to process
-	Config map[string]any `json:"config"`
+	Config *config.ExampleConfigInstance `json:"config"`
 }
 
 // Response format for `process-config`
@@ -36,20 +35,13 @@ func processConfig(c *cli.Context) error {
 		return err
 	}
 
-	// Get the config
-	cfg := config.NewExampleConfig()
-	err = hdconfig.UnmarshalConfigurationInstanceIntoMetadata(request.Config, cfg)
-	if err != nil {
-		return err
-	}
-
 	// This is where any examples of validation will go when added
 	errors := []string{}
 
 	// Get the open ports
 	ports := map[string]uint16{}
-	if cfg.ServerConfig.PortMode.Value != config.PortMode_Closed {
-		ports[ids.ServerConfigID+"/"+ids.PortModeID] = uint16(cfg.ServerConfig.Port.Value)
+	if request.Config.ServerConfig.PortMode != config.PortMode_Closed {
+		ports[ids.ServerConfigID.String()+"/"+ids.PortID.String()] = uint16(request.Config.ServerConfig.Port)
 	}
 
 	// Create the response

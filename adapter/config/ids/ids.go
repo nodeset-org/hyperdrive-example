@@ -1,16 +1,20 @@
 package ids
 
+import (
+	hdconfig "github.com/nodeset-org/hyperdrive/modules/config"
+)
+
 const (
-	ExampleBoolID      string = "exampleBool"
-	ExampleIntID       string = "exampleInt"
-	ExampleUintID      string = "exampleUint"
-	ExampleFloatID     string = "exampleFloat"
-	ExampleStringID    string = "exampleString"
-	ExampleChoiceID    string = "exampleChoice"
-	SubConfigID        string = "subConfig"
-	SubExampleBoolID   string = "subConfigBool"
-	SubExampleChoiceID string = "subConfigChoice"
-	ServerConfigID     string = "server"
-	PortModeID         string = "portMode"
-	PortID             string = "port"
+	ExampleBoolID      hdconfig.Identifier = "exampleBool"
+	ExampleIntID       hdconfig.Identifier = "exampleInt"
+	ExampleUintID      hdconfig.Identifier = "exampleUint"
+	ExampleFloatID     hdconfig.Identifier = "exampleFloat"
+	ExampleStringID    hdconfig.Identifier = "exampleString"
+	ExampleChoiceID    hdconfig.Identifier = "exampleChoice"
+	SubConfigID        hdconfig.Identifier = "subConfig"
+	SubExampleBoolID   hdconfig.Identifier = "subConfigBool"
+	SubExampleChoiceID hdconfig.Identifier = "subConfigChoice"
+	ServerConfigID     hdconfig.Identifier = "server"
+	PortModeID         hdconfig.Identifier = "portMode"
+	PortID             hdconfig.Identifier = "port"
 )
