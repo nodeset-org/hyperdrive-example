@@ -7,7 +7,6 @@ import (
 	"github.com/goccy/go-json"
 	"github.com/nodeset-org/hyperdrive-example/adapter/config"
 	"github.com/nodeset-org/hyperdrive-example/adapter/utils"
-	"github.com/nodeset-org/hyperdrive-example/shared"
 	hdconfig "github.com/nodeset-org/hyperdrive/modules/config"
 	"github.com/urfave/cli/v2"
 )
@@ -23,7 +22,7 @@ func getConfigMetadata(c *cli.Context) error {
 	cfg := config.NewExampleConfig()
 
 	// Create the response
-	cfgMap := hdconfig.MarshalConfigurationToMap(cfg, shared.Version)
+	cfgMap := hdconfig.MarshalConfigurationToMap(cfg)
 	bytes, err := json.Marshal(cfgMap)
 	if err != nil {
 		return fmt.Errorf("error marshalling config: %w", err)

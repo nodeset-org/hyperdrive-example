@@ -2,7 +2,7 @@
     "name": "example-module",
     "shortcut": "em",
     "description": "Simple example of a Hyperdrive module",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "author": "NodeSet",
     "url": "https://github.com/nodeset-org/hyperdrive-example",
     "email": "info@nodeset.io",

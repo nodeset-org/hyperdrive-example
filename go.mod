@@ -3,10 +3,11 @@ module github.com/nodeset-org/hyperdrive-example
 go 1.22.7
 
 require (
+	github.com/blang/semver/v4 v4.0.0
 	github.com/goccy/go-json v0.10.4
 	github.com/gorilla/mux v1.8.1
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51
-	github.com/nodeset-org/hyperdrive v1.1.2-0.20250124064941-f5e070a392e5
+	github.com/nodeset-org/hyperdrive v1.1.2-0.20250125224355-aa0566325f85
 	github.com/urfave/cli/v2 v2.27.5
 	gopkg.in/yaml.v3 v3.0.1
 )
@@ -14,7 +15,6 @@ require (
 require (
 	al.essio.dev/pkg/shellescape v1.5.1 // indirect
 	github.com/Microsoft/go-winio v0.6.2 // indirect
-	github.com/blang/semver/v4 v4.0.0 // indirect
 	github.com/containerd/log v0.1.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.5 // indirect
 	github.com/distribution/reference v0.6.0 // indirect

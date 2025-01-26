@@ -14,7 +14,7 @@ type setConfigRequest struct {
 	utils.KeyedRequest
 
 	// The config instance to process
-	Config *hdconfig.HyperdriveConfigInstance `json:"config"`
+	Config *hdconfig.HyperdriveSettings `json:"config"`
 }
 
 // Handle the `set-config` command
@@ -25,28 +25,15 @@ func setConfig(c *cli.Context) error {
 		return err
 	}
 
-	// Construct the module instance from the Hyperdrive config
-	var settings *config.ExampleConfigInstance
-	for _, module := range request.Config.Modules {
-		if module.Name != utils.FullyQualifiedModuleName {
-			continue
-		}
-
-		modCfg := config.NewExampleConfig()
-		modSettings, err := module.Settings.CreateSettingsFromMetadata(modCfg)
-		if err != nil {
-			return fmt.Errorf("error creating settings from metadata: %w", err)
-		}
-		settings = new(config.ExampleConfigInstance)
-		err = modSettings.ConvertToKnownType(settings)
-		if err != nil {
-			return fmt.Errorf("error converting settings to known type: %w", err)
-		}
-	}
-
-	// Make sure the config was found
-	if settings == nil {
+	// Construct the module settings from the Hyperdrive config
+	modInstance, exists := request.Config.Modules[utils.FullyQualifiedModuleName]
+	if !exists {
 		return fmt.Errorf("could not find config for %s", utils.FullyQualifiedModuleName)
+	}
+	var settings config.ExampleConfigSettings
+	err = modInstance.DeserializeSettingsIntoKnownType(&settings)
+	if err != nil {
+		return fmt.Errorf("error loading settings: %w", err)
 	}
 
 	// Make a config manager
@@ -54,7 +41,7 @@ func setConfig(c *cli.Context) error {
 	if err != nil {
 		return fmt.Errorf("error creating config manager: %w", err)
 	}
-	cfgMgr.AdapterConfig = settings
+	cfgMgr.AdapterConfig = &settings
 
 	// Save it
 	err = cfgMgr.SaveConfigToDisk()

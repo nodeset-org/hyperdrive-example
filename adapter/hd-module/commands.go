@@ -52,6 +52,19 @@ func RegisterCommands(app *cli.App) {
 				},
 			},
 			{
+				Name:    "upgrade-config",
+				Aliases: []string{"u"},
+				Flags:   []cli.Flag{},
+				Usage:   "Upgrade the module's configuration to the latest version - used when the configuration was generated with an older version of this module.",
+				Action: func(c *cli.Context) error {
+					// Validate args
+					utils.ValidateArgCount(c, 0)
+
+					// Run
+					return upgradeConfig(c)
+				},
+			},
+			{
 				Name:    "process-config",
 				Aliases: []string{"p"},
 				Flags:   []cli.Flag{},
