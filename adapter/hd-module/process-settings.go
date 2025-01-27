@@ -12,16 +12,16 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-// Request format for `process-config`
-type processConfigRequest struct {
+// Request format for `process-settings`
+type processSettingsRequest struct {
 	utils.KeyedRequest
 
-	// The config instance to process
-	Config *hdconfig.HyperdriveSettings `json:"config"`
+	// The config settings to process
+	Settings *hdconfig.HyperdriveSettings `json:"settings"`
 }
 
-// Response format for `process-config`
-type processConfigResponse struct {
+// Response format for `process-settings`
+type processSettingsResponse struct {
 	// A list of errors that occurred during processing, if any
 	Errors []string `json:"errors"`
 
@@ -29,18 +29,18 @@ type processConfigResponse struct {
 	Ports map[string]uint16 `json:"ports"`
 }
 
-// Handle the `process-config` command
-func processConfig(c *cli.Context) error {
+// Handle the `process-settings` command
+func processSettings(c *cli.Context) error {
 	// Get the request
-	request, err := utils.HandleKeyedRequest[*processConfigRequest](c)
+	request, err := utils.HandleKeyedRequest[*processSettingsRequest](c)
 	if err != nil {
 		return err
 	}
 
 	// Construct the module settings from the Hyperdrive config
-	modInstance, exists := request.Config.Modules[utils.FullyQualifiedModuleName]
+	modInstance, exists := request.Settings.Modules[utils.FullyQualifiedModuleName]
 	if !exists {
-		return fmt.Errorf("could not find config for %s", utils.FullyQualifiedModuleName)
+		return fmt.Errorf("could not find settings for %s", utils.FullyQualifiedModuleName)
 	}
 	var settings config.ExampleConfigSettings
 	err = modInstance.DeserializeSettingsIntoKnownType(&settings)
@@ -58,7 +58,7 @@ func processConfig(c *cli.Context) error {
 	}
 
 	// Create the response
-	response := processConfigResponse{
+	response := processSettingsResponse{
 		Errors: errors,
 		Ports:  ports,
 	}
@@ -66,7 +66,7 @@ func processConfig(c *cli.Context) error {
 	// Marshal it
 	bytes, err := json.Marshal(response)
 	if err != nil {
-		return fmt.Errorf("error marshalling process-config response: %w", err)
+		return fmt.Errorf("error marshalling process-settings response: %w", err)
 	}
 
 	// Print it

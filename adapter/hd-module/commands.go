@@ -52,42 +52,42 @@ func RegisterCommands(app *cli.App) {
 				},
 			},
 			{
-				Name:    "upgrade-config",
+				Name:    "upgrade-instance",
 				Aliases: []string{"u"},
 				Flags:   []cli.Flag{},
-				Usage:   "Upgrade the module's configuration to the latest version - used when the configuration was generated with an older version of this module.",
+				Usage:   "Upgrade an instance of the module's configuration to the latest version - used when the configuration was generated with an older version of this module.",
 				Action: func(c *cli.Context) error {
 					// Validate args
 					utils.ValidateArgCount(c, 0)
 
 					// Run
-					return upgradeConfig(c)
+					return upgradeInstance(c)
 				},
 			},
 			{
-				Name:    "process-config",
+				Name:    "process-settings",
 				Aliases: []string{"p"},
 				Flags:   []cli.Flag{},
-				Usage:   "Process the module's configuration, validating it without saving.",
+				Usage:   "Process the current settings for the module's configuration, validating it without saving.",
 				Action: func(c *cli.Context) error {
 					// Validate args
 					utils.ValidateArgCount(c, 0)
 
 					// Run
-					return processConfig(c)
+					return processSettings(c)
 				},
 			},
 			{
-				Name:    "set-config",
+				Name:    "set-settings",
 				Aliases: []string{"s"},
 				Flags:   []cli.Flag{},
-				Usage:   "Sets the module's configuration, saving it to disk.",
+				Usage:   "Sets the settings for the module's configuration, saving it to disk.",
 				Action: func(c *cli.Context) error {
 					// Validate args
 					utils.ValidateArgCount(c, 0)
 
 					// Run
-					return setConfig(c)
+					return setSettings(c)
 				},
 			},
 			{

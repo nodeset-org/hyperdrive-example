@@ -7,7 +7,7 @@ require (
 	github.com/goccy/go-json v0.10.4
 	github.com/gorilla/mux v1.8.1
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51
-	github.com/nodeset-org/hyperdrive v1.1.2-0.20250125224355-aa0566325f85
+	github.com/nodeset-org/hyperdrive v1.1.2-0.20250127074045-2c796103a4fc
 	github.com/urfave/cli/v2 v2.27.5
 	gopkg.in/yaml.v3 v3.0.1
 )

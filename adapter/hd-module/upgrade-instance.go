@@ -13,22 +13,22 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-// Request format for `upgrade-config`
-type upgradeConfigRequest struct {
+// Request format for `upgrade-instance`
+type upgradeInstanceRequest struct {
 	utils.KeyedRequest
 
 	// The current config instance
-	Config *modconfig.ModuleInstance `json:"config"`
+	Instance *modconfig.ModuleInstance `json:"instance"`
 }
 
-// Handle the `upgrade-config` command
-func upgradeConfig(c *cli.Context) error {
+// Handle the `upgrade-instance` command
+func upgradeInstance(c *cli.Context) error {
 	// Get the request
-	request, err := utils.HandleKeyedRequest[*upgradeConfigRequest](c)
+	request, err := utils.HandleKeyedRequest[*upgradeInstanceRequest](c)
 	if err != nil {
 		return err
 	}
-	modInstance := request.Config
+	modInstance := request.Instance
 
 	// Switch on the instance version
 	var settings *config.ExampleConfigSettings
@@ -59,7 +59,7 @@ func upgradeConfig(c *cli.Context) error {
 	// Marshal it
 	bytes, err := json.Marshal(response)
 	if err != nil {
-		return fmt.Errorf("error marshalling process-config response: %w", err)
+		return fmt.Errorf("error marshalling upgrade-instance response: %w", err)
 	}
 
 	// Print it

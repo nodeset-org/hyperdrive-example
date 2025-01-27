@@ -9,24 +9,24 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-// Request format for `set-config`
-type setConfigRequest struct {
+// Request format for `set-settings`
+type setSettingsRequest struct {
 	utils.KeyedRequest
 
-	// The config instance to process
-	Config *hdconfig.HyperdriveSettings `json:"config"`
+	// The config settings to save
+	Settings *hdconfig.HyperdriveSettings `json:"settings"`
 }
 
-// Handle the `set-config` command
-func setConfig(c *cli.Context) error {
+// Handle the `set-settings` command
+func setSettings(c *cli.Context) error {
 	// Get the request
-	request, err := utils.HandleKeyedRequest[*setConfigRequest](c)
+	request, err := utils.HandleKeyedRequest[*setSettingsRequest](c)
 	if err != nil {
 		return err
 	}
 
 	// Construct the module settings from the Hyperdrive config
-	modInstance, exists := request.Config.Modules[utils.FullyQualifiedModuleName]
+	modInstance, exists := request.Settings.Modules[utils.FullyQualifiedModuleName]
 	if !exists {
 		return fmt.Errorf("could not find config for %s", utils.FullyQualifiedModuleName)
 	}
@@ -46,7 +46,7 @@ func setConfig(c *cli.Context) error {
 	// Save it
 	err = cfgMgr.SaveConfigToDisk()
 	if err != nil {
-		return fmt.Errorf("error saving config: %w", err)
+		return fmt.Errorf("error saving settings: %w", err)
 	}
 	return nil
 }
