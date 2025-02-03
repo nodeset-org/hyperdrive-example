@@ -18,5 +18,5 @@ FROM debian:bookworm-slim AS adapter
 COPY --from=builder /build/hd-adapter /usr/bin/hd-adapter
 
 # Container entry point
-ENTRYPOINT [ "/usr/bin/hd-adapter", "-s", "/hd/secret" ]
+ENTRYPOINT [ "/usr/bin/hd-adapter" ]
 CMD [ "idle" ]

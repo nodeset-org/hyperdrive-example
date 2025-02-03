@@ -37,12 +37,6 @@ func run(c *cli.Context) error {
 	args, err := shellquote.Split(request.Command)
 	args = append([]string{
 		os.Args[0], // Adapter path
-		fmt.Sprintf("--%s", utils.KeyFileFlag.Name),
-		c.String(utils.KeyFileFlag.Name),
-		fmt.Sprintf("--%s", utils.ConfigDirFlag.Name),
-		c.String(utils.ConfigDirFlag.Name),
-		fmt.Sprintf("--%s", utils.LogDirFlag.Name),
-		c.String(utils.LogDirFlag.Name),
 	}, args...)
 	if err != nil {
 		return fmt.Errorf("error parsing command: %w", err)

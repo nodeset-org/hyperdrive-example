@@ -38,7 +38,7 @@ type Authenticator struct {
 
 // Creates a new Authenticator instance
 func NewAuthenticator(c *cli.Context) (*Authenticator, error) {
-	keyFile := c.String(KeyFileFlag.Name)
+	keyFile := KeyFile
 	if keyFile == "" {
 		return nil, fmt.Errorf("secret key file is required")
 	}
@@ -71,8 +71,8 @@ func (a *Authenticator) Authenticate(key string) error {
 	return nil
 }
 
-// Handles an incoming keyed request by reading the input, parsing it, and authenticating it
-func HandleKeyedRequest[RequestType IKeyedRequest](c *cli.Context) (RequestType, error) {
+// Handles an incoming request by reading the input and parsing it
+func HandleRequest[RequestType any](c *cli.Context) (RequestType, error) {
 	var data RequestType
 
 	// Read the input
@@ -86,6 +86,20 @@ func HandleKeyedRequest[RequestType IKeyedRequest](c *cli.Context) (RequestType,
 	err = json.Unmarshal([]byte(input), &data)
 	if err != nil {
 		return data, fmt.Errorf("error parsing input: %w", err)
+	}
+
+	return data, nil
+}
+
+// Handles an incoming keyed request by reading the input, parsing it, and authenticating it
+func HandleKeyedRequest[RequestType IKeyedRequest](c *cli.Context) (RequestType, error) {
+	data, err := HandleRequest[RequestType](c)
+	if err != nil {
+		return data, err
+	}
+
+	if Mode != AdapterMode_Project {
+		return data, fmt.Errorf("keyed requests are only supported in project mode, not [%s]", Mode)
 	}
 
 	// Authenticate the request

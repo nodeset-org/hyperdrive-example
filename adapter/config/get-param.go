@@ -15,7 +15,7 @@ import (
 // Get one of the config parameters
 func getParam(c *cli.Context, param string) error {
 	// Create the logger
-	logDir := c.String(utils.LogDirFlag.Name)
+	logDir := utils.LogDir
 	if logDir == "" {
 		return fmt.Errorf("log directory flag is required")
 	}

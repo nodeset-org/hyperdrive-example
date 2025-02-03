@@ -27,7 +27,7 @@ type AdapterConfigManager struct {
 
 // Create a new configuration manager for the adapter
 func NewAdapterConfigManager(c *cli.Context) (*AdapterConfigManager, error) {
-	configDir := c.String(utils.ConfigDirFlag.Name)
+	configDir := utils.ConfigDir
 	if configDir == "" {
 		return nil, fmt.Errorf("config directory is required")
 	}

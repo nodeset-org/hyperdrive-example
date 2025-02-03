@@ -15,8 +15,6 @@ import (
 
 // Request format for `upgrade-instance`
 type upgradeInstanceRequest struct {
-	utils.KeyedRequest
-
 	// The current config instance
 	Instance *modconfig.ModuleInstance `json:"instance"`
 }
@@ -24,7 +22,7 @@ type upgradeInstanceRequest struct {
 // Handle the `upgrade-instance` command
 func upgradeInstance(c *cli.Context) error {
 	// Get the request
-	request, err := utils.HandleKeyedRequest[*upgradeInstanceRequest](c)
+	request, err := utils.HandleRequest[*upgradeInstanceRequest](c)
 	if err != nil {
 		return err
 	}

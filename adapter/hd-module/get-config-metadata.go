@@ -6,18 +6,11 @@ import (
 
 	"github.com/goccy/go-json"
 	"github.com/nodeset-org/hyperdrive-example/adapter/config"
-	"github.com/nodeset-org/hyperdrive-example/adapter/utils"
 	hdconfig "github.com/nodeset-org/hyperdrive/modules/config"
 	"github.com/urfave/cli/v2"
 )
 
 func getConfigMetadata(c *cli.Context) error {
-	// Get the request
-	_, err := utils.HandleKeyedRequest[*utils.KeyedRequest](c)
-	if err != nil {
-		return err
-	}
-
 	// Get the config
 	cfg := config.NewExampleConfig()
 

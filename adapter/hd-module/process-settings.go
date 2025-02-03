@@ -14,8 +14,6 @@ import (
 
 // Request format for `process-settings`
 type processSettingsRequest struct {
-	utils.KeyedRequest
-
 	// The config settings to process
 	Settings *hdconfig.HyperdriveSettings `json:"settings"`
 }
@@ -32,7 +30,7 @@ type processSettingsResponse struct {
 // Handle the `process-settings` command
 func processSettings(c *cli.Context) error {
 	// Get the request
-	request, err := utils.HandleKeyedRequest[*processSettingsRequest](c)
+	request, err := utils.HandleRequest[*processSettingsRequest](c)
 	if err != nil {
 		return err
 	}
