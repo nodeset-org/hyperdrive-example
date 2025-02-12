@@ -18,4 +18,5 @@ FROM debian:bookworm-slim AS service
 COPY --from=builder /build/hd-service /usr/bin/hd-service
 
 # Container entry point
-ENTRYPOINT [ "/usr/bin/hd-service", "-c", "/hd/config/service-cfg.yaml", "-k", "/hd/secret" ]
+ENTRYPOINT [ "/usr/bin/hd-service" ]
+CMD [ "-c", "/hd/config/service-cfg.yaml", "-l", "/hd/logs" ]

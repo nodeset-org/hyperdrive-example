@@ -26,19 +26,6 @@ func RegisterCommands(app *cli.App) {
 				},
 			},
 			{
-				Name:    "get-log-file",
-				Aliases: []string{"l"},
-				Flags:   []cli.Flag{},
-				Usage:   "Get the path to a log file.",
-				Action: func(c *cli.Context) error {
-					// Validate args
-					utils.ValidateArgCount(c, 0)
-
-					// Run
-					return getLogFile(c)
-				},
-			},
-			{
 				Name:    "get-config-metadata",
 				Aliases: []string{"c"},
 				Flags:   []cli.Flag{},
@@ -66,7 +53,7 @@ func RegisterCommands(app *cli.App) {
 			},
 			{
 				Name:    "process-settings",
-				Aliases: []string{"p"},
+				Aliases: []string{"ps"},
 				Flags:   []cli.Flag{},
 				Usage:   "Process the current settings for the module's configuration, validating it without saving.",
 				Action: func(c *cli.Context) error {
@@ -79,7 +66,7 @@ func RegisterCommands(app *cli.App) {
 			},
 			{
 				Name:    "set-settings",
-				Aliases: []string{"s"},
+				Aliases: []string{"ss"},
 				Flags:   []cli.Flag{},
 				Usage:   "Sets the settings for the module's configuration, saving it to disk.",
 				Action: func(c *cli.Context) error {
@@ -91,16 +78,29 @@ func RegisterCommands(app *cli.App) {
 				},
 			},
 			{
-				Name:    "get-containers",
-				Aliases: []string{"t"},
+				Name:    "start",
+				Aliases: []string{"s"},
 				Flags:   []cli.Flag{},
-				Usage:   "Get the list of containers owned by this module.",
+				Usage:   "Start the module's services (stopping and restarting any that changed due to the new configuration).",
 				Action: func(c *cli.Context) error {
 					// Validate args
 					utils.ValidateArgCount(c, 0)
 
 					// Run
-					return getContainers(c)
+					return startServices(c)
+				},
+			},
+			{
+				Name:    "stop",
+				Aliases: []string{"t"},
+				Flags:   []cli.Flag{},
+				Usage:   "Stop the module's services.",
+				Action: func(c *cli.Context) error {
+					// Validate args
+					utils.ValidateArgCount(c, 0)
+
+					// Run
+					return stopServices(c)
 				},
 			},
 			{

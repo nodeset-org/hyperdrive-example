@@ -44,8 +44,7 @@ func setParam(c *cli.Context, param string, value string) error {
 	// Create an API client
 	serviceName := os.Getenv(TestServerEndpointEnvVarName)
 	if serviceName == "" {
-		projectName := os.Getenv("HD_PROJECT_NAME")
-		serviceName = projectName + "_" + shared.ServiceContainerName
+		serviceName = utils.ComposeProject + "_" + shared.ServiceContainerName
 	}
 	apiClient, err := api.NewApiClient(logger, serviceName, uint(cfg.ServerConfig.Port))
 	if err != nil {

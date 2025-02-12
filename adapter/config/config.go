@@ -1,6 +1,8 @@
 package config
 
 import (
+	"fmt"
+
 	"github.com/nodeset-org/hyperdrive-example/adapter/config/ids"
 	v0_1_0 "github.com/nodeset-org/hyperdrive-example/adapter/config/v0.1.0"
 	"github.com/nodeset-org/hyperdrive-example/shared"
@@ -72,4 +74,32 @@ func UpgradeSettings(old *v0_1_0.ExampleConfigSettings) *ExampleConfigSettings {
 		ExampleConfigSettings: *old,
 		ExampleUint:           DefaultUintValue,
 	}
+}
+
+// GetChangedServices returns a list of services that would be affected by the new settings
+func (s *ExampleConfigSettings) GetChangedServices(oldSettings *ExampleConfigSettings) ([]string, error) {
+	cfg := NewExampleConfig()
+	newModSettings := hdconfig.CreateModuleSettings(cfg)
+	err := newModSettings.CopySettingsFromKnownType(s)
+	if err != nil {
+		return nil, fmt.Errorf("error copying new settings: %w", err)
+	}
+
+	oldModSettings := hdconfig.CreateModuleSettings(cfg)
+	err = oldModSettings.CopySettingsFromKnownType(oldSettings)
+	if err != nil {
+		return nil, fmt.Errorf("error copying old settings: %w", err)
+	}
+
+	// Compare the settings - if there are no differences, return nil
+	diff := hdconfig.CompareSettings(cfg, oldModSettings, newModSettings)
+	if len(diff.ParameterDifferences) == 0 && len(diff.SectionDifferences) == 0 {
+		return nil, nil
+	}
+
+	// Any parameter changes will affect the service, so just return it
+	changedServices := []string{
+		shared.ServiceContainerName,
+	}
+	return changedServices, nil
 }

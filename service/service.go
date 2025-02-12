@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"sync"
 	"syscall"
 
@@ -29,12 +30,18 @@ func main() {
 			Email: "info@nodeset.io",
 		},
 	}
-	app.Copyright = "(C) 2024 NodeSet LLC"
+	app.Copyright = "(C) 2025 NodeSet LLC"
 
 	configFileFlag := &cli.StringFlag{
 		Name:     "config-file",
 		Aliases:  []string{"c"},
 		Usage:    "The path of the configuration file to load",
+		Required: true,
+	}
+	logDirFlag := &cli.StringFlag{
+		Name:     "log-dir",
+		Aliases:  []string{"l"},
+		Usage:    "The directory to store logs in",
 		Required: true,
 	}
 	ipFlag := &cli.StringFlag{
@@ -49,18 +56,12 @@ func main() {
 		Usage:   "The port to bind the API server to",
 		Value:   uint(shared.DefaultServerApiPort),
 	}
-	apiKeyFlag := &cli.StringFlag{
-		Name:     "api-key",
-		Aliases:  []string{"k"},
-		Usage:    "Path of the key to use for authenticating incoming API requests",
-		Required: true,
-	}
 
 	app.Flags = []cli.Flag{
 		configFileFlag,
+		logDirFlag,
 		ipFlag,
 		portFlag,
-		apiKeyFlag,
 	}
 	app.Action = func(c *cli.Context) error {
 		// Get the config
@@ -76,7 +77,8 @@ func main() {
 		}
 
 		// Create the logger
-		loggerImpl, err := shared.NewFileLogger(shared.ServiceLogFile)
+		logPath := filepath.Join(c.String(logDirFlag.Name), shared.ServiceLogFile)
+		loggerImpl, err := shared.NewFileLogger(logPath)
 		if err != nil {
 			return fmt.Errorf("error creating logger: %w", err)
 		}
