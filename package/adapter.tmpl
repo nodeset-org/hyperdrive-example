@@ -2,18 +2,30 @@
 # You can make yours as simple or as complex as you need, as long as you follow the adapter specification.
 
 services:
-  {{.GetContainerName em_adapter}}:
+  adapter:
     image: nodeset/hyperdrive-example:v0.2.0
+    container_name: {{.AdapterContainerName}}
     restart: unless-stopped
-    entrypoint: /usr/bin/hd-adapter -s {{.ModuleSecretFile}} # This is the path to the adapter binary
+    entrypoint: /usr/bin/hd-adapter # This is the path to the adapter binary
     environment:
-      - HD_PROJECT_NAME={{.GetProjectName}}
+    {{- range $var := .AdapterEnvironmentVariables}}
+      - {{$var}}
+    {{- end}}
     volumes:
-      - {{.ModuleConfigDir}}:/hd/config
-      - {{.ModuleLogDir}}:/hd/logs
+    {{- range $vol := .AdapterVolumes}}
+      - {{$vol}}
+    {{- end}}
+    {{- if .ModuleNetwork}}
+    networks:
+      - {{.ModuleNetwork}}
+    {{- end}}
     cap_drop:
       - all
     cap_add:
       - dac_override
     security_opt:
       - no-new-privileges
+{{- if .ModuleNetwork}}
+networks:
+  {{.ModuleNetwork}}:
+{{- end}}
