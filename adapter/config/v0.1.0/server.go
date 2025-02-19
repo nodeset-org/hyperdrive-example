@@ -6,8 +6,14 @@ import (
 	hdconfig "github.com/nodeset-org/hyperdrive/modules/config"
 )
 
+const (
+	containerTag string = "nodeset/hyperdrive-example-service:v" + shared.Version
+)
+
 type ServerConfig struct {
 	hdconfig.SectionHeader
+
+	ContainerTag hdconfig.StringParameter
 
 	Port hdconfig.UintParameter
 
@@ -15,8 +21,9 @@ type ServerConfig struct {
 }
 
 type ServerConfigSettings struct {
-	Port     uint64   `json:"port" yaml:"port"`
-	PortMode PortMode `json:"portMode" yaml:"portMode"`
+	ContainerTag string   `json:"containerTag" yaml:"containerTag"`
+	Port         uint64   `json:"port" yaml:"port"`
+	PortMode     PortMode `json:"portMode" yaml:"portMode"`
 }
 
 func NewServerConfig() *ServerConfig {
@@ -24,6 +31,13 @@ func NewServerConfig() *ServerConfig {
 	cfg.ID = ids.ServerConfigID
 	cfg.Name = "Service Config"
 	cfg.Description.Default = "This is the configuration for the module's service. This isn't used by the service directly, but it is used by Hyperdrive itself in the service's Docker Compose file template to configure the service during its starting process."
+
+	// Container Tag
+	cfg.ContainerTag.ID = ids.ContainerTagID
+	cfg.ContainerTag.Name = "Container Tag"
+	cfg.ContainerTag.Description.Default = "This is the tag used for the service's Docker container image."
+	cfg.ContainerTag.Default = containerTag
+	cfg.ContainerTag.AffectedContainers = []string{shared.ServiceContainerName}
 
 	// Port
 	cfg.Port.ID = ids.PortID
@@ -61,6 +75,7 @@ func NewServerConfig() *ServerConfig {
 
 func (cfg ServerConfig) GetParameters() []hdconfig.IParameter {
 	return []hdconfig.IParameter{
+		&cfg.ContainerTag,
 		&cfg.Port,
 		&cfg.PortMode,
 	}

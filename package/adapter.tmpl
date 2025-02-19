@@ -3,21 +3,25 @@
 
 services:
   adapter:
-    image: nodeset/hyperdrive-example:v0.2.0
+    image: nodeset/hyperdrive-example-adapter:v0.2.0
     container_name: {{.AdapterContainerName}}
     restart: unless-stopped
     entrypoint: /usr/bin/hd-adapter # This is the path to the adapter binary
-    environment:
+    command:
+      - idle
+    environment: {{if eq (len .AdapterEnvironmentVariables) 0}}[]{{else}}
     {{- range $var := .AdapterEnvironmentVariables}}
       - {{$var}}
     {{- end}}
-    volumes:
+    {{- end}}
+    volumes: {{if eq (len .AdapterVolumes) 0}}[]{{else}}
     {{- range $vol := .AdapterVolumes}}
       - {{$vol}}
     {{- end}}
+    {{- end}}
     {{- if .ModuleNetwork}}
     networks:
-      - {{.ModuleNetwork}}
+      - net
     {{- end}}
     cap_drop:
       - all
@@ -27,5 +31,5 @@ services:
       - no-new-privileges
 {{- if .ModuleNetwork}}
 networks:
-  {{.ModuleNetwork}}:
+  net:
 {{- end}}

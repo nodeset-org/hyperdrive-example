@@ -51,7 +51,9 @@ build_service() {
 # Builds the module package
 build_package() {
     echo -n "Building module package... "
-    tar cfJ build/$VERSION/hyperdrive-example.zip package/* || fail "Error building module package."
+    cd package
+    zip -rq ../build/$VERSION/hyperdrive-example.zip * || fail "Error building module package."
+    cd ..
     echo "done!"
 }
 
