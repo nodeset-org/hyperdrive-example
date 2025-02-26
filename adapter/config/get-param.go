@@ -1,6 +1,7 @@
 package config
 
 import (
+	"bufio"
 	"fmt"
 	"log/slog"
 	"os"
@@ -12,8 +13,15 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+var (
+	getParamFlag *cli.StringFlag = &cli.StringFlag{
+		Name:  "param",
+		Usage: "The parameter to get",
+	}
+)
+
 // Get one of the config parameters
-func getParam(c *cli.Context, param string) error {
+func getParam(c *cli.Context) error {
 	// Create the logger
 	logDir := utils.LogDir
 	if logDir == "" {
@@ -49,6 +57,15 @@ func getParam(c *cli.Context, param string) error {
 	apiClient, err := api.NewApiClient(logger, serviceName, uint(cfg.ServerConfig.Port))
 	if err != nil {
 		return fmt.Errorf("error creating API client: %w", err)
+	}
+
+	// Get the param
+	param := c.String(getParamFlag.Name)
+	if param == "" {
+		fmt.Println("Please provide a parameter to get:")
+		scanner := bufio.NewScanner(os.Stdin)
+		scanner.Scan()
+		param = scanner.Text()
 	}
 
 	// Run the get call
