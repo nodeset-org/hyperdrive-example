@@ -14,6 +14,9 @@ import (
 // Request format for `stop`
 type stopRequest struct {
 	utils.KeyedRequest
+
+	// The services to stop. If empty, all services will be stopped.
+	Services []string `json:"services"`
 }
 
 // Handle the `stop` command
@@ -27,20 +30,36 @@ func stopServices(c *cli.Context) error {
 	}
 
 	// Get the request
-	_, err := utils.HandleKeyedRequest[*stopRequest](c)
+	request, err := utils.HandleKeyedRequest[*stopRequest](c)
 	if err != nil {
 		return err
 	}
 
-	// Stop the services - the example doesn't need to do anything interesting with the provided settings, so they are ignored
+	// Get the list of files to stop
+	filesTopStop := []string{}
+	if len(request.Services) == 0 {
+		filesTopStop = []string{shared.ServiceContainerName + ".yml"}
+	} else {
+		for _, service := range request.Services {
+			switch service {
+			case shared.ServiceContainerName:
+				filesTopStop = append(filesTopStop, shared.ServiceContainerName+".yml")
+			}
+		}
+	}
+
+	// Create the compose command args
 	args := []string{
 		"compose",
 		"-p",
 		utils.ComposeProject,
-		"-f",
-		filepath.Join(utils.ComposeDir, shared.ServiceContainerName+".yml"),
-		"stop",
 	}
+	for _, file := range filesTopStop {
+		args = append(args, "-f", filepath.Join(utils.ComposeDir, file))
+	}
+	args = append(args, "stop")
+
+	// Stop the services
 	cmd := exec.Command("docker", args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
