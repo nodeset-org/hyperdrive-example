@@ -25,7 +25,7 @@ func NewSubConfig() *SubConfig {
 	cfg.Name = "Sub Config"
 	cfg.Description.Default = "This is a sub-section of the main configuration."
 	cfg.Hidden.Default = true
-	cfg.Hidden.Template = "{{if eq .GetValue " + ids.ExampleBoolID.String() + " true}}false{{else}}true{{end}}"
+	cfg.Hidden.Template = "{{if eq (.GetValue \"" + ids.ExampleBoolID.String() + "\") true}}false{{else}}true{{end}}"
 
 	// SubExampleBool
 	cfg.SubExampleBool.ID = ids.SubExampleBoolID

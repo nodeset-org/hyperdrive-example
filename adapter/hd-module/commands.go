@@ -91,19 +91,6 @@ func RegisterCommands(app *cli.App) {
 				},
 			},
 			{
-				Name:    "stop",
-				Aliases: []string{"t"},
-				Flags:   []cli.Flag{},
-				Usage:   "Stop the module's services.",
-				Action: func(c *cli.Context) error {
-					// Validate args
-					utils.ValidateArgCount(c, 0)
-
-					// Run
-					return stopServices(c)
-				},
-			},
-			{
 				Name:    "run",
 				Aliases: []string{"r"},
 				Flags:   []cli.Flag{},
