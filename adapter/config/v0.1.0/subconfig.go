@@ -1,6 +1,8 @@
 package config
 
 import (
+	"fmt"
+
 	"github.com/nodeset-org/hyperdrive-example/adapter/config/ids"
 	nativecfg "github.com/nodeset-org/hyperdrive-example/shared/config"
 	hdconfig "github.com/nodeset-org/hyperdrive/modules/config"
@@ -25,7 +27,7 @@ func NewSubConfig() *SubConfig {
 	cfg.Name = "Sub Config"
 	cfg.Description.Default = "This is a sub-section of the main configuration."
 	cfg.Hidden.Default = true
-	cfg.Hidden.Template = "{{if eq (.GetValue \"" + ids.ExampleBoolID.String() + "\") true}}false{{else}}true{{end}}"
+	cfg.Hidden.Template = fmt.Sprintf(`{{if eq (.GetValue "%s") true}}false{{else}}true{{end}}`, ids.ExampleBoolID)
 
 	// SubExampleBool
 	cfg.SubExampleBool.ID = ids.SubExampleBoolID

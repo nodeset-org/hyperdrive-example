@@ -87,13 +87,19 @@ func NewExampleConfig() *ExampleConfig {
 	options[0].Description.Default = "This is the first option."
 	options[0].Value = nativecfg.ExampleOption_One
 
-	thresholdString := strconv.FormatFloat(FloatThreshold, 'f', -1, 64)
+	var thresholdString string
+	if FloatThreshold == float64(int(FloatThreshold)) {
+		// Needed to preserve trailing zero so the template parser knows this is a float
+		thresholdString = strconv.FormatFloat(FloatThreshold, 'f', 1, 64)
+	} else {
+		thresholdString = strconv.FormatFloat(FloatThreshold, 'f', -1, 64)
+	}
 	options[1].Name = "Two"
-	options[1].Description.Default = "This is the second option. It is hidden when ExampleFloat is less than " + thresholdString + "."
-	options[1].Description.Template = fmt.Sprintf("{{if lt .GetValue %s %s}}This option is hidden because the float is less than %s.{{else}}This option is visible because the float is greater than or equal to %s.{{end}}", ids.ExampleFloatID, thresholdString, thresholdString, thresholdString)
+	options[1].Description.Default = fmt.Sprintf("This is the second option. It is hidden when %s is less than %s.", cfg.ExampleFloat.Name, thresholdString)
+	options[1].Description.Template = fmt.Sprintf(`{{if lt (.GetValue "%s") %s}}This option is hidden because %s is less than %s.{{else}}This option is visible because the float is greater than or equal to %s.{{end}}`, ids.ExampleFloatID, thresholdString, cfg.ExampleFloat.Name, thresholdString, thresholdString)
 	options[1].Value = nativecfg.ExampleOption_Two
-	options[1].Disabled.Default = true
-	options[1].Disabled.Template = "{{if eq .GetValue " + ids.ExampleBoolID.String() + " true}}false{{else}}{{.UseDefault}}{{end}}"
+	options[1].Hidden.Default = false
+	options[1].Hidden.Template = fmt.Sprintf(`{{if lt (.GetValue "%s") %s}}true{{else}}{{.UseDefault}}{{end}}`, ids.ExampleFloatID, thresholdString)
 
 	options[2].Name = "Three"
 	options[2].Description.Default = "This is the third option."
@@ -102,7 +108,7 @@ func NewExampleConfig() *ExampleConfig {
 	// ExampleChoice
 	cfg.ExampleChoice.ID = ids.ExampleChoiceID
 	cfg.ExampleChoice.Name = "Example Choice"
-	cfg.ExampleChoice.Description.Default = "This is an example of a choice parameter between multiple options."
+	cfg.ExampleChoice.Description.Default = fmt.Sprintf("This is an example of a choice parameter between multiple options. The second option is hidden when %s is less than "+thresholdString+".", cfg.ExampleFloat.Name)
 	cfg.ExampleChoice.Options = options
 	cfg.ExampleChoice.Default = options[0].Value
 	cfg.ExampleChoice.AffectedContainers = []string{}
