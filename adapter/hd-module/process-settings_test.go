@@ -5,7 +5,7 @@ import (
 
 	"github.com/goccy/go-json"
 	"github.com/nodeset-org/hyperdrive-example/shared"
-	hdconfig "github.com/nodeset-org/hyperdrive/shared/config"
+	hdconfig "github.com/nodeset-org/hyperdrive/config"
 	"github.com/stretchr/testify/require"
 )
 

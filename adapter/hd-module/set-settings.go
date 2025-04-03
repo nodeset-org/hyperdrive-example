@@ -5,7 +5,7 @@ import (
 
 	"github.com/nodeset-org/hyperdrive-example/adapter/config"
 	"github.com/nodeset-org/hyperdrive-example/adapter/utils"
-	hdconfig "github.com/nodeset-org/hyperdrive/shared/config"
+	hdconfig "github.com/nodeset-org/hyperdrive/config"
 	"github.com/urfave/cli/v2"
 )
 

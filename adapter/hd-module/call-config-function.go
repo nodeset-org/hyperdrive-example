@@ -6,7 +6,9 @@ import (
 	"github.com/goccy/go-json"
 	"github.com/nodeset-org/hyperdrive-example/adapter/config"
 	"github.com/nodeset-org/hyperdrive-example/adapter/utils"
-	hdconfig "github.com/nodeset-org/hyperdrive/shared/config"
+	hdconfig "github.com/nodeset-org/hyperdrive/config"
+	hdtemplate "github.com/nodeset-org/hyperdrive/shared/templates"
+
 	"github.com/urfave/cli/v2"
 )
 
@@ -34,7 +36,10 @@ func callConfigFunction(c *cli.Context) error {
 
 	switch request.FuncName {
 	case "GetDerivedValued":
-		bytes, err := json.Marshal(settings.GetDerivedValue())
+		response := hdtemplate.CallConfigFunctionResponse{
+			Result: string(settings.GetDerivedValue()),
+		}
+		bytes, err := json.Marshal(response)
 		if err != nil {
 			return fmt.Errorf("error marshalling derived value: %w", err)
 		}
