@@ -103,3 +103,7 @@ func (s *ExampleConfigSettings) GetChangedServices(oldSettings *ExampleConfigSet
 	}
 	return changedServices, nil
 }
+
+func (s *ExampleConfigSettings) GetDerivedValue() uint64 {
+	return 10 * 2
+}

@@ -14,6 +14,7 @@ const (
 	SubConfigID        hdconfig.Identifier = "subConfig"
 	SubExampleBoolID   hdconfig.Identifier = "subConfigBool"
 	SubExampleChoiceID hdconfig.Identifier = "subConfigChoice"
+	SubDerivedValueID  hdconfig.Identifier = "subDerivedValue"
 	ServerConfigID     hdconfig.Identifier = "server"
 	ContainerTagID     hdconfig.Identifier = "containerTag"
 	PortModeID         hdconfig.Identifier = "portMode"

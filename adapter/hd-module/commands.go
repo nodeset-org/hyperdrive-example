@@ -103,6 +103,19 @@ func RegisterCommands(app *cli.App) {
 					return run(c)
 				},
 			},
+			{
+				Name:    "call-config-function",
+				Aliases: []string{"ccf"},
+				Flags:   []cli.Flag{},
+				Usage:   "Call a function in the module's configuration.",
+				Action: func(c *cli.Context) error {
+					// Validate args
+					utils.ValidateArgCount(c, 0)
+
+					// Run
+					return callConfigFunction(c)
+				},
+			},
 		},
 	})
 }

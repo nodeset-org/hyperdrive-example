@@ -14,11 +14,14 @@ type SubConfig struct {
 	SubExampleBool hdconfig.BoolParameter
 
 	SubExampleChoice hdconfig.ChoiceParameter[nativecfg.ExampleOption]
+
+	SubDerivedValue hdconfig.StringParameter
 }
 
 type SubConfigSettings struct {
 	SubExampleBool   bool                    `json:"subConfigBool"`
 	SubExampleChoice nativecfg.ExampleOption `json:"subConfigChoice"`
+	SubDerivedValue  string                  `json:"subDerivedValue"`
 }
 
 func NewSubConfig() *SubConfig {
@@ -50,6 +53,11 @@ func NewSubConfig() *SubConfig {
 	cfg.SubExampleChoice.Description.Default = "This is an example of a choice parameter between multiple options in a sub-section."
 	cfg.SubExampleChoice.Options = options
 	cfg.SubExampleChoice.Default = options[1].Value
+
+	// SubDerivedValue
+	cfg.SubDerivedValue.ID = ids.SubDerivedValueID
+	cfg.SubDerivedValue.Name = "Sub Derived Value"
+	cfg.SubDerivedValue.Description.Default = "This is a derived value based on the sub-section's parameters."
 
 	return cfg
 }
