@@ -175,6 +175,7 @@ func CreateInstanceFromNativeConfig(native *nativecfg.NativeExampleConfig) *Exam
 		SubConfig: &SubConfigSettings{
 			SubExampleBool:   native.SubConfig.SubExampleBool,
 			SubExampleChoice: native.SubConfig.SubExampleChoice,
+			SubDerivedValue:  native.SubConfig.SubDerivedValue,
 		},
 		ServerConfig: &ServerConfigSettings{},
 	}
@@ -191,6 +192,7 @@ func ConvertInstanceToNativeConfig(instance *ExampleConfigSettings) *nativecfg.N
 		SubConfig: nativecfg.NativeSubConfig{
 			SubExampleBool:   instance.SubConfig.SubExampleBool,
 			SubExampleChoice: instance.SubConfig.SubExampleChoice,
+			SubDerivedValue:  instance.SubConfig.SubDerivedValue,
 		},
 	}
 	return native

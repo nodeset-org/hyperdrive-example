@@ -105,5 +105,5 @@ func (s *ExampleConfigSettings) GetChangedServices(oldSettings *ExampleConfigSet
 }
 
 func (s *ExampleConfigSettings) GetDerivedValue() uint64 {
-	return 10 * 2
+	return 1336 + 1
 }

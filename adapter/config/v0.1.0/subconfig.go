@@ -66,6 +66,7 @@ func (cfg SubConfig) GetParameters() []hdconfig.IParameter {
 	return []hdconfig.IParameter{
 		&cfg.SubExampleBool,
 		&cfg.SubExampleChoice,
+		&cfg.SubDerivedValue,
 	}
 }
 

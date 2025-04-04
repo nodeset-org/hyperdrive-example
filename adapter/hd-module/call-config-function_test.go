@@ -76,6 +76,6 @@ func TestCallConfigFunction(t *testing.T) {
 	err = json.Unmarshal(outputBuf.Bytes(), &result)
 	require.NoError(t, err)
 
-	require.Equal(t, "20", result.Result)
+	require.Equal(t, "1337", result.Result)
 	t.Log("call-config-function ran successfully")
 }
