@@ -56,8 +56,10 @@ func NewSubConfig() *SubConfig {
 
 	// SubDerivedValue
 	cfg.SubDerivedValue.ID = ids.SubDerivedValueID
+	cfg.SubDerivedValue.Hidden.Default = true
 	cfg.SubDerivedValue.Name = "Sub Derived Value"
 	cfg.SubDerivedValue.Description.Default = "This is a derived value based on the sub-section's parameters."
+	cfg.SubDerivedValue.Default = ""
 
 	return cfg
 }

@@ -50,6 +50,8 @@ func (s *ApiServer) handleParamGet(w http.ResponseWriter, r *http.Request) {
 		response.Value = strconv.FormatBool(s.cfgMgr.Config.SubConfig.SubExampleBool)
 	case "subChoice":
 		response.Value = string(s.cfgMgr.Config.SubConfig.SubExampleChoice)
+	case "subDerivedValue":
+		response.Value = string(s.cfgMgr.Config.SubConfig.SubDerivedValue)
 	default:
 		HandleInputError(w, s.logger, fmt.Errorf("invalid parameter [%s]", param))
 	}
@@ -86,6 +88,8 @@ func (s *ApiServer) handleParamPost(w http.ResponseWriter, r *http.Request) {
 		s.cfgMgr.Config.SubConfig.SubExampleBool, err = strconv.ParseBool(request.Value)
 	case "subChoice":
 		s.cfgMgr.Config.SubConfig.SubExampleChoice = config.ExampleOption(request.Value)
+	// case "subDerivedValue":
+	// 	s.cfgMgr.Config.SubConfig.SubDerivedValue = request.Value
 	default:
 		HandleInputError(w, s.logger, fmt.Errorf("invalid parameter [%s]", request.ID))
 	}
