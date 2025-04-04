@@ -41,6 +41,13 @@ func TestCallConfigFunction(t *testing.T) {
 	err := json.Unmarshal([]byte(ExampleSettingsJson), &request.Settings)
 	require.NoError(t, err)
 
+	// Marshal the request to JSON
+	inputBytes, err := json.Marshal(request)
+	require.NoError(t, err)
+
+	// Add newline to simulate ENTER key
+	inputBytes = append(inputBytes, '\n')
+
 	// Redirect stdout to a new pipe
 	oldStdout := os.Stdout
 	rOut, wOut, err := os.Pipe()
@@ -53,6 +60,8 @@ func TestCallConfigFunction(t *testing.T) {
 
 	// Run the function
 	app := app.CreateApp()
+	app.Reader = bytes.NewReader(inputBytes)
+
 	ctx := cli.NewContext(app, nil, nil)
 	err = callConfigFunction(ctx)
 	require.NoError(t, err)
@@ -67,6 +76,6 @@ func TestCallConfigFunction(t *testing.T) {
 	err = json.Unmarshal(outputBuf.Bytes(), &result)
 	require.NoError(t, err)
 
-	require.Equal(t, 20, result.Result)
+	require.Equal(t, "20", result.Result)
 	t.Log("call-config-function ran successfully")
 }
