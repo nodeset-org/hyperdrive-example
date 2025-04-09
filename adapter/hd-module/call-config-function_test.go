@@ -36,7 +36,7 @@ const ExampleSettingsJson = `{
 func TestCallConfigFunction(t *testing.T) {
 	// Build the request
 	request := CallConfigFunctionRequest{
-		FuncName: "GetDerivedValued",
+		FuncName: "GetDerivedValue",
 	}
 	err := json.Unmarshal([]byte(ExampleSettingsJson), &request.Settings)
 	require.NoError(t, err)

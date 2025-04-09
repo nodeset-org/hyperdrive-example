@@ -35,7 +35,7 @@ func callConfigFunction(c *cli.Context) error {
 	}
 
 	switch request.FuncName {
-	case "GetDerivedValued":
+	case "GetDerivedValue":
 		response := hdtemplate.CallConfigFunctionResponse{
 			Result: fmt.Sprintf("%d", settings.GetDerivedValue()),
 		}
