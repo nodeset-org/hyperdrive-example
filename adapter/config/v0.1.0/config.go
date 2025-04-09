@@ -118,7 +118,7 @@ func NewExampleConfig() *ExampleConfig {
 
 	// ExampleDerivedValue
 	cfg.ExampleDerivedValue.ID = ids.ExampleDerivedValueID
-	// cfg.ExampleDerivedValue.Hidden.Default = true
+	cfg.ExampleDerivedValue.Hidden.Default = true
 	cfg.ExampleDerivedValue.Name = "Sub Derived Value"
 	cfg.ExampleDerivedValue.Description.Default = "This is a derived value based on the sub-section's parameters."
 	cfg.ExampleDerivedValue.Default = ""
