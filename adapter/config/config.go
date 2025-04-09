@@ -47,6 +47,7 @@ func (cfg ExampleConfig) GetParameters() []hdconfig.IParameter {
 		&cfg.ExampleFloat,
 		&cfg.ExampleString,
 		&cfg.ExampleChoice,
+		&cfg.ExampleDerivedValue,
 	}
 }
 

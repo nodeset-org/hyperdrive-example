@@ -36,6 +36,8 @@ type NativeExampleConfig struct {
 
 	ExampleChoice ExampleOption `json:"exampleChoice" yaml:"exampleChoice"`
 
+	ExampleDerivedValue string `json:"exampleDerivedValue" yaml:"exampleDerivedValue"`
+
 	SubConfig NativeSubConfig `json:"subConfig" yaml:"subConfig"`
 }
 
@@ -44,8 +46,6 @@ type NativeSubConfig struct {
 	SubExampleBool bool `json:"subExampleBool" yaml:"subExampleBool"`
 
 	SubExampleChoice ExampleOption `json:"subExampleChoice" yaml:"subExampleChoice"`
-
-	SubDerivedValue string `json:"subDerivedValue" yaml:"subDerivedValue"`
 }
 
 // Configuration manager
