@@ -7,6 +7,7 @@ import (
 	"github.com/nodeset-org/hyperdrive-example/adapter/config"
 	"github.com/nodeset-org/hyperdrive-example/adapter/utils"
 	hdconfig "github.com/nodeset-org/hyperdrive/config"
+	hdmoduleconfig "github.com/nodeset-org/hyperdrive/modules/config"
 	hdtemplate "github.com/nodeset-org/hyperdrive/shared/templates"
 
 	"github.com/urfave/cli/v2"
@@ -23,10 +24,7 @@ func callConfigFunction(c *cli.Context) error {
 		return err
 	}
 
-	modInstance, exists := request.Settings.Modules[utils.FullyQualifiedModuleName]
-	if !exists {
-		return fmt.Errorf("could not find config for %s", utils.FullyQualifiedModuleName)
-	}
+	modInstance := hdmoduleconfig.ModuleInstance{}
 
 	var settings config.ExampleConfigSettings
 	err = modInstance.DeserializeSettingsIntoKnownType(&settings)
