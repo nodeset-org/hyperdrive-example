@@ -76,7 +76,7 @@ func HandleRequest[RequestType any](c *cli.Context) (RequestType, error) {
 	var data RequestType
 
 	// Read the input
-	reader := bufio.NewReader(os.Stdin)
+	reader := bufio.NewReader(c.App.Reader)
 	input, err := reader.ReadString('\n')
 	if err != nil {
 		return data, fmt.Errorf("error reading input: %w", err)

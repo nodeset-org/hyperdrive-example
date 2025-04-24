@@ -33,6 +33,8 @@ type ExampleConfig struct {
 
 	ExampleChoice hdconfig.ChoiceParameter[nativecfg.ExampleOption]
 
+	ExampleDerivedValue hdconfig.StringParameter
+
 	SubConfig *SubConfig
 
 	ServerConfig *ServerConfig
@@ -45,8 +47,9 @@ type ExampleConfigSettings struct {
 	ExampleString string                  `json:"exampleString"`
 	ExampleChoice nativecfg.ExampleOption `json:"exampleChoice"`
 
-	SubConfig    *SubConfigSettings    `json:"subConfig"`
-	ServerConfig *ServerConfigSettings `json:"server" yaml:"server"`
+	ExampleDerivedValue string                `json:"exampleDerivedValue"`
+	SubConfig           *SubConfigSettings    `json:"subConfig"`
+	ServerConfig        *ServerConfigSettings `json:"server" yaml:"server"`
 }
 
 func NewExampleConfig() *ExampleConfig {
@@ -113,6 +116,13 @@ func NewExampleConfig() *ExampleConfig {
 	cfg.ExampleChoice.Default = options[0].Value
 	cfg.ExampleChoice.AffectedContainers = []string{}
 
+	// ExampleDerivedValue
+	cfg.ExampleDerivedValue.ID = ids.ExampleDerivedValueID
+	cfg.ExampleDerivedValue.Hidden.Default = true
+	cfg.ExampleDerivedValue.Name = "Sub Derived Value"
+	cfg.ExampleDerivedValue.Description.Default = "This is a derived value based on the sub-section's parameters."
+	cfg.ExampleDerivedValue.Default = ""
+
 	// Subconfigs
 	cfg.SubConfig = NewSubConfig()
 	cfg.ServerConfig = NewServerConfig()
@@ -127,6 +137,7 @@ func (cfg ExampleConfig) GetParameters() []hdconfig.IParameter {
 		&cfg.ExampleFloat,
 		&cfg.ExampleString,
 		&cfg.ExampleChoice,
+		&cfg.ExampleDerivedValue,
 	}
 }
 
@@ -167,11 +178,12 @@ func (s *ExampleConfigSettings) GetChangedServices(oldSettings *ExampleConfigSet
 
 func CreateInstanceFromNativeConfig(native *nativecfg.NativeExampleConfig) *ExampleConfigSettings {
 	instance := &ExampleConfigSettings{
-		ExampleBool:   native.ExampleBool,
-		ExampleInt:    native.ExampleInt,
-		ExampleFloat:  native.ExampleFloat,
-		ExampleString: native.ExampleString,
-		ExampleChoice: native.ExampleChoice,
+		ExampleBool:         native.ExampleBool,
+		ExampleInt:          native.ExampleInt,
+		ExampleFloat:        native.ExampleFloat,
+		ExampleString:       native.ExampleString,
+		ExampleChoice:       native.ExampleChoice,
+		ExampleDerivedValue: native.ExampleDerivedValue,
 		SubConfig: &SubConfigSettings{
 			SubExampleBool:   native.SubConfig.SubExampleBool,
 			SubExampleChoice: native.SubConfig.SubExampleChoice,
@@ -183,11 +195,12 @@ func CreateInstanceFromNativeConfig(native *nativecfg.NativeExampleConfig) *Exam
 
 func ConvertInstanceToNativeConfig(instance *ExampleConfigSettings) *nativecfg.NativeExampleConfig {
 	native := &nativecfg.NativeExampleConfig{
-		ExampleBool:   instance.ExampleBool,
-		ExampleInt:    instance.ExampleInt,
-		ExampleFloat:  instance.ExampleFloat,
-		ExampleString: instance.ExampleString,
-		ExampleChoice: instance.ExampleChoice,
+		ExampleBool:         instance.ExampleBool,
+		ExampleInt:          instance.ExampleInt,
+		ExampleFloat:        instance.ExampleFloat,
+		ExampleString:       instance.ExampleString,
+		ExampleChoice:       instance.ExampleChoice,
+		ExampleDerivedValue: instance.ExampleDerivedValue,
 		SubConfig: nativecfg.NativeSubConfig{
 			SubExampleBool:   instance.SubConfig.SubExampleBool,
 			SubExampleChoice: instance.SubConfig.SubExampleChoice,

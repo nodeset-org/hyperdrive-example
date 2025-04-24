@@ -36,6 +36,8 @@ type NativeExampleConfig struct {
 
 	ExampleChoice ExampleOption `json:"exampleChoice" yaml:"exampleChoice"`
 
+	ExampleDerivedValue string `json:"exampleDerivedValue" yaml:"exampleDerivedValue"`
+
 	SubConfig NativeSubConfig `json:"subConfig" yaml:"subConfig"`
 }
 

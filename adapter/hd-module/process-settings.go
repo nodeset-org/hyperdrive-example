@@ -8,8 +8,8 @@ import (
 	"github.com/nodeset-org/hyperdrive-example/adapter/config/ids"
 	v0_1_0 "github.com/nodeset-org/hyperdrive-example/adapter/config/v0.1.0"
 	"github.com/nodeset-org/hyperdrive-example/adapter/utils"
+	hdconfig "github.com/nodeset-org/hyperdrive/config"
 	modconfig "github.com/nodeset-org/hyperdrive/modules/config"
-	hdconfig "github.com/nodeset-org/hyperdrive/shared/config"
 	"github.com/urfave/cli/v2"
 )
 

@@ -50,6 +50,8 @@ func (s *ApiServer) handleParamGet(w http.ResponseWriter, r *http.Request) {
 		response.Value = strconv.FormatBool(s.cfgMgr.Config.SubConfig.SubExampleBool)
 	case "subChoice":
 		response.Value = string(s.cfgMgr.Config.SubConfig.SubExampleChoice)
+	case "exampleDerivedValue":
+		response.Value = string(s.cfgMgr.Config.ExampleDerivedValue)
 	default:
 		HandleInputError(w, s.logger, fmt.Errorf("invalid parameter [%s]", param))
 	}

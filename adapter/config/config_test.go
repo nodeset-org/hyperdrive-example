@@ -9,9 +9,9 @@ import (
 )
 
 const (
-	oldSettingsJson string = `{"exampleBool":false,"exampleChoice":"one","exampleFloat":50,"exampleInt":0,"exampleString":"","exampleUint":42,"server":{"port":8080,"portMode":"closed"},"subConfig":{"subConfigBool":false,"subConfigChoice":"two"}}`
+	oldSettingsJson string = `{"exampleBool":false,"exampleChoice":"one","exampleFloat":50,"exampleDerivedvalue": 1337,"exampleInt":0,"exampleString":"","exampleUint":42,"server":{"port":8080,"portMode":"closed"},"subConfig":{"subConfigBool":false,"subConfigChoice":"two"}}`
 
-	newSettingsJson string = `{"exampleBool":false,"exampleChoice":"one","exampleFloat":80,"exampleInt":0,"exampleString":"","exampleUint":42,"server":{"port":8085,"portMode":"open"},"subConfig":{"subConfigBool":false,"subConfigChoice":"two"}}`
+	newSettingsJson string = `{"exampleBool":false,"exampleChoice":"one","exampleFloat":80,"exampleDerivedvalue": 1337,"exampleInt":0,"exampleString":"","exampleUint":42,"server":{"port":8085,"portMode":"open"},"subConfig":{"subConfigBool":false,"subConfigChoice":"two"}}`
 )
 
 func TestChangedServices(t *testing.T) {

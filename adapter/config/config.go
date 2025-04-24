@@ -47,6 +47,7 @@ func (cfg ExampleConfig) GetParameters() []hdconfig.IParameter {
 		&cfg.ExampleFloat,
 		&cfg.ExampleString,
 		&cfg.ExampleChoice,
+		&cfg.ExampleDerivedValue,
 	}
 }
 
@@ -102,4 +103,8 @@ func (s *ExampleConfigSettings) GetChangedServices(oldSettings *ExampleConfigSet
 		shared.ServiceContainerName,
 	}
 	return changedServices, nil
+}
+
+func (s *ExampleConfigSettings) GetDerivedValue() uint64 {
+	return 1336 + 1
 }
